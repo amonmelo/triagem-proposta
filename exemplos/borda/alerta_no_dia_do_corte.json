@@ -1,0 +1,9 @@
+{
+  "id": "B-2020a",
+  "area_degradada_ha": 300,
+  "area_matricula_ha": 500,
+  "area_car_ha": 490,
+  "alerta_desmatamento": "2020-01-01",
+  "situacao_car": "Ativo",
+  "situacao_cadastral": "Regular"
+}

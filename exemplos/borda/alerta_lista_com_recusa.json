@@ -1,0 +1,12 @@
+{
+  "id": "B-L2",
+  "area_degradada_ha": 300,
+  "area_matricula_ha": 500,
+  "area_car_ha": 490,
+  "alerta_desmatamento": [
+    "20/12/2019",
+    "02/01/2020"
+  ],
+  "situacao_car": "Ativo",
+  "situacao_cadastral": "Regular"
+}
