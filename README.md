@@ -1,8 +1,10 @@
 # triagem-proposta
 
+![CI](https://github.com/amonmelo/triagem-proposta/actions/workflows/ci.yml/badge.svg)
+
 Triagem de propostas de recuperação de pastagens degradadas — meu teste prático para a vaga de Desenvolvedor(a) de Sistemas e Processos de IA (AgDev).
 
-![Triagem rodando: P-004 recusada com os dois motivos, resumo dos 5 exemplos e 188 testes](docs/demo.gif)
+![Triagem rodando: P-004 recusada com os dois motivos, resumo dos 5 exemplos e a bateria de testes](docs/demo.gif)
 
 A skill recebe a proposta em JSON, aplica as regras R1–R6 **em código Python puro** (nada de "o modelo acha") e devolve um parecer — **SEGUE**, **RECUSADA** ou **REVISÃO HUMANA** — com todos os motivos, as pendências e um card em Markdown pronto para virar tarefa no gerenciador.
 
@@ -13,7 +15,7 @@ Quando a proposta cai em RECUSADA e REVISÃO HUMANA ao mesmo tempo, vale RECUSAD
 Só precisa de Python 3.10+. Nenhuma dependência para usar; `pytest` só para rodar os testes.
 
 ```bash
-git clone <este repositório>
+git clone https://github.com/amonmelo/triagem-proposta.git
 cd triagem-proposta
 python -m triagem exemplos/P-001.json
 ```
@@ -68,7 +70,7 @@ pip install pytest
 pytest
 ```
 
-São 188 testes cobrindo regra a regra, os limites exatos do enunciado (100 ha, 01/01/2020, 5%), valores malformados, a linha de comando e um teste de robustez que passa 300 propostas aleatórias malformadas pela triagem — nenhuma quebra, todas com parecer válido e determinístico. O CI (`.github/workflows/ci.yml`) roda tudo a cada push.
+São 196 testes cobrindo regra a regra, os limites exatos do enunciado (100 ha, 01/01/2020, 5%), valores malformados, a linha de comando e um teste de robustez que passa 300 propostas aleatórias malformadas pela triagem — nenhuma quebra, todas com parecer válido e determinístico. O CI (`.github/workflows/ci.yml`) roda tudo a cada push.
 
 ## Formato de entrada
 
@@ -89,7 +91,11 @@ Códigos de saída: `0` = triado com sucesso (parecer é resultado, não erro); 
 ## Usar como skill do Claude
 
 - **Claude Code:** copie esta pasta para `~/.claude/skills/triagem-proposta` (no Windows: `%USERPROFILE%\.claude\skills\triagem-proposta`).
-- **Claude Desktop:** Configurações → Capabilities → Skills → enviar a pasta compactada (.zip).
+- **Claude Desktop:** Configurações → Capabilities → Skills → enviar o .zip da skill. Para gerar o .zip só com o que a skill usa (sem testes nem `.git`), rode na pasta do repositório:
+
+  ```bash
+  git archive --format=zip --prefix=triagem-proposta/ -o triagem-proposta.zip HEAD SKILL.md run.py triagem
+  ```
 
 Depois disso, "tria a proposta anexada" já dispara o fluxo: o Claude roda o script e apresenta o card — o parecer sempre vem do código, nunca do modelo.
 
