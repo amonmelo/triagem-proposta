@@ -243,6 +243,8 @@ class TestR6ValidarCampos:
             ("area_degradada_ha", True),    # bool é armadilha clássica em Python
             ("area_degradada_ha", -50),     # área negativa não existe
             ("area_degradada_ha", 0),       # zero também não
+            ("area_degradada_ha", float("inf")),  # json.loads aceita Infinity
+            ("area_car_ha", float("nan")),
             ("area_matricula_ha", 0),
             ("area_car_ha", -1),
             ("alerta_desmatamento", 5),     # número não é data

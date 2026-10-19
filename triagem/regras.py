@@ -5,6 +5,7 @@ pelo modelo. Cada função devolve (violacao_ou_None, detalhe_do_resultado).
 """
 from __future__ import annotations
 
+import math
 from datetime import date, datetime
 from typing import Any, Optional, Tuple
 
@@ -69,8 +70,14 @@ def interpretar_data(valor: Any) -> Optional[date]:
 
 
 def _numero_valido(valor: Any) -> bool:
-    # bool é subclasse de int em Python — true/false não é área.
-    return isinstance(valor, (int, float)) and not isinstance(valor, bool) and valor > 0
+    # bool é subclasse de int em Python — true/false não é área. E o json do
+    # Python aceita Infinity/NaN, que também não são área.
+    return (
+        isinstance(valor, (int, float))
+        and not isinstance(valor, bool)
+        and math.isfinite(valor)
+        and valor > 0
+    )
 
 
 def _r6_ausente(campo: str) -> Violacao:
