@@ -224,10 +224,11 @@ class TestR6ValidarCampos:
         assert len(resultado["violacoes"]) == 7
         assert all(v.regra == "R6" for v in resultado["violacoes"])
 
-    @pytest.mark.parametrize("campo", list(CAMPOS_OBRIGATORIOS))
+    # O alerta fica de fora: nele, nulo é "sem alerta", não ausência.
+    @pytest.mark.parametrize(
+        "campo", [c for c in CAMPOS_OBRIGATORIOS if c != "alerta_desmatamento"]
+    )
     def test_nulo_equivale_a_ausente_para_os_demais_campos(self, campo):
-        if campo == "alerta_desmatamento":
-            pytest.skip("nulo no alerta é 'sem alerta', não ausência")
         resultado = validar_campos({**PROPOSTA_BASE, campo: None})
         assert len(resultado["violacoes"]) == 1
         assert resultado["violacoes"][0].regra == "R6"
