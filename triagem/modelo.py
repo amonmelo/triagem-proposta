@@ -5,6 +5,7 @@ Markdown renderiza a forma acentuada ("REVISÃO HUMANA") — ver `ROTULOS`.
 """
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 from datetime import date
 from typing import Any, Optional
@@ -39,7 +40,7 @@ CAMPOS_OBRIGATORIOS = (
 # Constantes das regras — mudar aqui é mudar a política (ver DESIGN.md).
 AREA_MINIMA_DEGRADADA_HA = 100.0        # R1: "pelo menos 100 ha"
 CORTE_DESMATAMENTO = date(2020, 1, 1)   # R2: recusa alerta ESTRITAMENTE posterior
-TOLERANCIA_AREA_PERCENTUAL = 5.0        # R5: recusa... não: diferença MAIOR que 5% revisa
+TOLERANCIA_AREA_PERCENTUAL = 5.0        # R5: diferença MAIOR que 5% vai para revisão
 
 
 @dataclass(frozen=True)
@@ -110,10 +111,4 @@ def normalizar_texto(valor: str) -> str:
 
 def citar(valor: Any) -> str:
     """Representa o valor recebido para citar em mensagens (JSON seguro)."""
-    return json_ansi(valor)
-
-
-def json_ansi(valor: Any) -> str:
-    import json
-
     return json.dumps(valor, ensure_ascii=False)
