@@ -98,10 +98,15 @@ class EntradaInvalida(Exception):
 
 
 def fmt_num(valor: float) -> str:
-    """Formata números de área sem ruído: 850.0 -> "850", 99.5 -> "99.5"."""
+    """Formata números de área sem ruído e com vírgula: 850.0 -> "850", 99.5 -> "99,5"."""
     if float(valor).is_integer():
         return str(int(valor))
-    return f"{valor:g}"
+    return f"{valor:g}".replace(".", ",")
+
+
+def fmt_pct(valor: float) -> str:
+    """Percentual com duas casas e vírgula decimal: 11.111 -> "11,11%"."""
+    return f"{valor:.2f}%".replace(".", ",")
 
 
 def normalizar_texto(valor: str) -> str:

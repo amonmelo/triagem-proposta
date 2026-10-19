@@ -215,7 +215,7 @@ class TestR5MatriculaVsCar:
 
     def test_mensagem_cita_o_percentual(self):
         violacao, _ = r5_area_matricula_vs_car(900, 1000)
-        assert "11.11%" in violacao.mensagem
+        assert "11,11%" in violacao.mensagem  # vírgula decimal, como o analista lê
 
 
 class TestR6ValidarCampos:

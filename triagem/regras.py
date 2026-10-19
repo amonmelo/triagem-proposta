@@ -19,6 +19,7 @@ from .modelo import (
     Violacao,
     citar,
     fmt_num,
+    fmt_pct,
     normalizar_texto,
 )
 
@@ -359,7 +360,7 @@ def r5_area_matricula_vs_car(
                 regra="R5",
                 mensagem=(
                     f"Área da matrícula ({fmt_num(area_matricula)} ha) e área do CAR "
-                    f"({fmt_num(area_car)} ha) divergem em {percentual:.2f}% — "
+                    f"({fmt_num(area_car)} ha) divergem em {fmt_pct(percentual)} — "
                     "acima da tolerância de 5%."
                 ),
                 parecer_sugerido=REVISAO_HUMANA,
@@ -368,9 +369,9 @@ def r5_area_matricula_vs_car(
                     "divergente e reapresentar a proposta."
                 ),
             ),
-            f"Divergência de {percentual:.2f}% entre matrícula e CAR (acima de 5%).",
+            f"Divergência de {fmt_pct(percentual)} entre matrícula e CAR (acima de 5%).",
         )
     return (
         None,
-        f"Divergência de {percentual:.2f}% entre matrícula e CAR (dentro da tolerância de 5%).",
+        f"Divergência de {fmt_pct(percentual)} entre matrícula e CAR (dentro da tolerância de 5%).",
     )
