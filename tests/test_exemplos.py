@@ -31,6 +31,7 @@ CASOS = [
     ("borda/alerta_lista_com_recusa.json", RECUSADA, ["R2"]),
     ("borda/alerta_ilegivel.json", REVISAO_HUMANA, ["R2"]),
     ("borda/alerta_lista_com_ilegivel.json", REVISAO_HUMANA, ["R2"]),
+    ("borda/alerta_no_futuro.json", REVISAO_HUMANA, ["R2"]),  # digitação, não alerta
     # --- borda: R3 ---
     ("borda/car_minusculo_espacado.json", SEGUE, []),
     ("borda/car_fora_da_lista.json", REVISAO_HUMANA, ["R3"]),

@@ -4,7 +4,7 @@
 
 ## Onde entra a revisão humana, e por quê
 
-A revisão entra onde o código não consegue *verificar* um fato, só desconfiar: CAR "Pendente" (R3), cadastro diferente de "Regular" (R4), divergência acima de 5% entre matrícula e CAR (R5) e campo ausente ou ilegível (R6). Recusa é outra coisa: área pequena (R1) e desmatamento após o corte (R2) são fatos objetivos — o código recusa sem cerimônia. Duas decisões que tomei nessa fronteira: quando RECUSADA e REVISÃO aparecem juntas, vale RECUSADA e o parecer lista todos os motivos; e dado quebrado (área negativa, número escrito como texto) não recusa "na letra" — vai para revisão humana, porque recusar proponente por erro de digitação é desperdiçar negócio.
+A revisão entra onde o código não consegue *verificar* um fato, só desconfiar: CAR "Pendente" (R3), cadastro diferente de "Regular" (R4), divergência acima de 5% entre matrícula e CAR (R5) e campo ausente ou ilegível (R6). Recusa é outra coisa: área pequena (R1) e desmatamento após o corte (R2) são fatos objetivos — o código recusa sem cerimônia. Duas decisões que tomei nessa fronteira: quando RECUSADA e REVISÃO aparecem juntas, vale RECUSADA e o parecer lista todos os motivos; e dado quebrado (área negativa, número escrito como texto, alerta com data no futuro) não recusa "na letra" — vai para revisão humana, porque recusar proponente por erro de digitação é desperdiçar negócio.
 
 ## Como levaria para dados reais (SICAR, PRODES, Receita) e o que pode dar errado
 

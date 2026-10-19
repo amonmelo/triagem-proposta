@@ -89,7 +89,7 @@ class TestR2AlertaDesmatamento:
             "2020-01-02",  # um dia depois do corte já recusa
             "02/01/2020",
             "15/03/2023",
-            "2030-05-05",
+            "2026-05-05",
             ["2019-06-01", "2020-01-02"],  # basta um alerta posterior
             ["01/01/2020", "15/03/2023"],
         ],
@@ -109,6 +109,28 @@ class TestR2AlertaDesmatamento:
         assert violacao is not None
         assert violacao.parecer_sugerido == REVISAO_HUMANA
         assert violacao.pendencia  # revisão humana sempre vem com ação concreta
+
+    @pytest.mark.parametrize(
+        "alerta",
+        ["2099-01-01", "31/12/2030", ["2019-01-01", "2099-01-01"]],
+    )
+    def test_data_no_futuro_vai_para_revisao(self, alerta):
+        # Data que ainda não chegou é erro de digitação, não alerta: não recusa.
+        violacao, _ = r2_alerta_desmatamento(alerta, hoje=date(2026, 10, 19))
+        assert violacao is not None
+        assert violacao.parecer_sugerido == REVISAO_HUMANA
+        assert "futuro" in violacao.mensagem
+        assert violacao.pendencia
+
+    def test_alerta_real_vence_data_no_futuro_na_mesma_lista(self):
+        violacao, _ = r2_alerta_desmatamento(
+            ["2099-01-01", "15/03/2023"], hoje=date(2026, 10, 19)
+        )
+        assert violacao.parecer_sugerido == RECUSADA
+
+    def test_data_de_hoje_ainda_conta_como_alerta(self):
+        violacao, _ = r2_alerta_desmatamento("2026-10-19", hoje=date(2026, 10, 19))
+        assert violacao.parecer_sugerido == RECUSADA
 
     def test_recusa_cita_a_data_recebida(self):
         violacao, _ = r2_alerta_desmatamento("15/03/2023")

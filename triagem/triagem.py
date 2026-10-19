@@ -5,6 +5,7 @@ mesmo tempo, vale RECUSADA — mas TODOS os motivos vão para o parecer.
 """
 from __future__ import annotations
 
+from datetime import date
 from typing import Any, List, Optional
 
 from .modelo import (
@@ -48,8 +49,12 @@ def _nao_avaliada(regra: str, motivo: str) -> ResultadoRegra:
     )
 
 
-def triar(proposta: Any) -> Parecer:
-    """Aplica as regras a uma proposta (dicionário) e devolve o Parecer."""
+def triar(proposta: Any, hoje: Optional[date] = None) -> Parecer:
+    """Aplica as regras a uma proposta (dicionário) e devolve o Parecer.
+
+    `hoje` só serve para a R2 reconhecer alerta com data no futuro; o padrão
+    é a data do dia (os testes fixam uma data para serem reprodutíveis).
+    """
     if not isinstance(proposta, dict):
         raise EntradaInvalida(
             "A proposta precisa ser um objeto JSON com os 7 campos do formato sugerido."
@@ -71,7 +76,7 @@ def triar(proposta: Any) -> Parecer:
 
     # R2 — alerta de desmatamento
     if "alerta_desmatamento" in valores:
-        violacao, detalhe = r2_alerta_desmatamento(valores["alerta_desmatamento"])
+        violacao, detalhe = r2_alerta_desmatamento(valores["alerta_desmatamento"], hoje)
         resultados.append(_violacao(violacao) if violacao else _ok("R2", detalhe))
     else:
         resultados.append(

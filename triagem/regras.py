@@ -171,13 +171,50 @@ def r1_area_degradada(area_ha: float) -> Tuple[Optional[Violacao], str]:
     return None, f"Área degradada de {fmt_num(area_ha)} ha (mínimo de 100 ha atendido)."
 
 
-def r2_alerta_desmatamento(alerta: Any) -> Tuple[Optional[Violacao], str]:
+def _alerta_duvidoso(valor: Any, futuro: bool) -> Violacao:
+    """Alerta que não dá para conferir contra o corte: vai para revisão."""
+    if futuro:
+        problema = "com data no futuro — provável erro de digitação"
+        esperado = "a data informada ainda não chegou"
+    else:
+        problema = "em formato não reconhecido"
+        esperado = "esperado: AAAA-MM-DD ou DD/MM/AAAA"
+    return Violacao(
+        regra="R2",
+        mensagem=(
+            f"Alerta de desmatamento {problema} "
+            f"(recebido: {citar(valor)}); não dá para conferir o corte."
+        ),
+        parecer_sugerido=REVISAO_HUMANA,
+        pendencia=(
+            "Conferir a data do alerta de desmatamento com o proponente "
+            f"({esperado})."
+        ),
+    )
+
+
+def _recusa_r2(data: date) -> Violacao:
+    return Violacao(
+        regra="R2",
+        mensagem=(
+            f"Alerta de desmatamento em {_fmt_data(data)} — "
+            f"posterior ao corte de {_fmt_data(CORTE_DESMATAMENTO)}."
+        ),
+        parecer_sugerido=RECUSADA,
+    )
+
+
+def r2_alerta_desmatamento(
+    alerta: Any, hoje: Optional[date] = None
+) -> Tuple[Optional[Violacao], str]:
     """R2 — nenhum alerta de desmatamento ESTRITAMENTE depois de 01/01/2020.
 
     Aceita nulo (sem alerta), uma data ou uma lista; basta um alerta depois
     do corte para recusar. Lista vazia equivale a sem alerta. Data ilegível
-    não pode ser verificada, então vai para REVISÃO HUMANA citando o valor.
+    ou no futuro (depois de `hoje`) não pode ser verificada, então vai para
+    REVISÃO HUMANA citando o valor — erro de digitação não recusa ninguém.
     """
+    hoje = hoje or date.today()
     if alerta is None:
         return None, "Sem alerta de desmatamento."
 
@@ -185,42 +222,26 @@ def r2_alerta_desmatamento(alerta: Any) -> Tuple[Optional[Violacao], str]:
         if not alerta:
             return None, "Lista de alertas vazia (equivale a sem alerta)."
         datas: list = []
-        ilegiveis: list = []
+        duvidosos: list = []  # (valor, é_futuro)
         for item in alerta:
             data = interpretar_data(item)
             if data is None:
-                ilegiveis.append(item)
+                duvidosos.append((item, False))
+            elif data > hoje:
+                duvidosos.append((item, True))
             else:
                 datas.append(data)
         posteriores = [d for d in datas if d > CORTE_DESMATAMENTO]
         if posteriores:
             pior = max(posteriores)
             return (
-                Violacao(
-                    regra="R2",
-                    mensagem=(
-                        f"Alerta de desmatamento em {_fmt_data(pior)} — "
-                        f"posterior ao corte de {_fmt_data(CORTE_DESMATAMENTO)}."
-                    ),
-                    parecer_sugerido=RECUSADA,
-                ),
+                _recusa_r2(pior),
                 f"Alertas verificados; o mais recente ({_fmt_data(pior)}) é posterior ao corte.",
             )
-        if ilegiveis:
+        if duvidosos:
             return (
-                Violacao(
-                    regra="R2",
-                    mensagem=(
-                        "Alerta de desmatamento em formato não reconhecido "
-                        f"(recebido: {citar(ilegiveis[0])}); não dá para conferir o corte."
-                    ),
-                    parecer_sugerido=REVISAO_HUMANA,
-                    pendencia=(
-                        "Conferir a data do alerta de desmatamento com o proponente "
-                        "(esperado: AAAA-MM-DD ou DD/MM/AAAA)."
-                    ),
-                ),
-                "Alertas com formato não reconhecido na lista.",
+                _alerta_duvidoso(*duvidosos[0]),
+                "Alertas que não dá para conferir na lista.",
             )
         mais_recente = max(datas)
         return (
@@ -230,33 +251,11 @@ def r2_alerta_desmatamento(alerta: Any) -> Tuple[Optional[Violacao], str]:
 
     data = interpretar_data(alerta)
     if data is None:
-        return (
-            Violacao(
-                regra="R2",
-                mensagem=(
-                    "Alerta de desmatamento em formato não reconhecido "
-                    f"(recebido: {citar(alerta)}); não dá para conferir o corte."
-                ),
-                parecer_sugerido=REVISAO_HUMANA,
-                pendencia=(
-                    "Conferir a data do alerta de desmatamento com o proponente "
-                    "(esperado: AAAA-MM-DD ou DD/MM/AAAA)."
-                ),
-            ),
-            "Alerta em formato não reconhecido.",
-        )
+        return _alerta_duvidoso(alerta, False), "Alerta em formato não reconhecido."
+    if data > hoje:
+        return _alerta_duvidoso(alerta, True), "Alerta com data no futuro."
     if data > CORTE_DESMATAMENTO:
-        return (
-            Violacao(
-                regra="R2",
-                mensagem=(
-                    f"Alerta de desmatamento em {_fmt_data(data)} — "
-                    f"posterior ao corte de {_fmt_data(CORTE_DESMATAMENTO)}."
-                ),
-                parecer_sugerido=RECUSADA,
-            ),
-            f"Alerta em {_fmt_data(data)}, depois do corte.",
-        )
+        return _recusa_r2(data), f"Alerta em {_fmt_data(data)}, depois do corte."
     return (
         None,
         f"Alerta em {_fmt_data(data)} — no dia do corte ou antes; não recusa.",

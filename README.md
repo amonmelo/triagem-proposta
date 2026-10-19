@@ -53,7 +53,7 @@ Os casos de borda ficam em `exemplos/borda/`: 100 ha exatos, alerta no próprio 
 |---|---|
 | R1 — "pelo menos 100 ha" (100 passa, 99,9 não) | `TestR1AreaDegradada` · `borda/area_100ha_exata.json` |
 | R2 — 01/01/2020 não recusa; 02/01 recusa; nulo, data ou lista | `TestR2AlertaDesmatamento` · `borda/alerta_*` |
-| R2 — alerta ilegível → revisão citando o valor | `TestR2AlertaDesmatamento` · `borda/alerta_ilegivel.json` |
+| R2 — alerta ilegível ou com data no futuro → revisão citando o valor | `TestR2AlertaDesmatamento` · `borda/alerta_ilegivel.json` · `borda/alerta_no_futuro.json` |
 | R3 — normaliza maiúsculas/espaços; fora da lista → revisão com o valor | `TestR3SituacaoCar` · `borda/car_*` |
 | R4 — só "Regular" passa; qualquer outra → revisão | `TestR4SituacaoCadastral` · `borda/cadastral_pendente.json` |
 | R5 — exatamente 5% passa (nos dois sentidos) | `TestR5MatriculaVsCar` · `borda/divergencia_*` |
