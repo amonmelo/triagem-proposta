@@ -105,7 +105,7 @@ Depois disso, "tria a proposta anexada" já dispara o fluxo: o Claude roda o scr
 python -m triagem exemplos/P-004.json --quadro quadro.md
 ```
 
-Além de imprimir, anexa a proposta como tarefa no fim do `quadro.md` — com data/hora e as pendências prontas para marcar. É a integração simulada com gerenciador de tarefas na versão mínima: nada de servidor, nada de conta; em produção, o mesmo bloco iria para a API do gerenciador.
+Além de imprimir, anexa a proposta como tarefa no fim do `quadro.md` — com data/hora e as pendências prontas para marcar. É a integração simulada com gerenciador de tarefas na versão mínima: nada de servidor, nada de conta; em produção, o mesmo bloco iria para a API do Asana (o gerenciador do time).
 
 ## Limitações honestas (e os próximos passos)
 
